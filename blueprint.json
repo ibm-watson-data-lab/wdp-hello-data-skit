@@ -1,0 +1,69 @@
+{
+  "name": "hello-data-starterkit",
+  "description": "Demonstrates how to access WDP data sources",
+  "thumbnailURL": "blueprint/thumbnail.svg",
+  "appIconURL": "blueprint/appicon.svg",
+  "previewURLs": [],
+  "type": "WEB",
+  "tags": [
+    "dataplatform"
+  ],
+  "checklist": [
+    {
+      "label": "Setup",
+      "link": "https://ibm.com"
+    },
+    {
+      "label": "Learn more",
+      "link": "https://ibm.com"
+    }
+  ],
+  "generators": {
+    "node": [
+      "generator-ibm-core-node-express",
+      "generator-ibm-cloud-enablement",
+      "generator-ibm-service-enablement",
+      "generator-usecase-enablement"
+    ],
+    "python": [
+      "generator-core-python-flask",
+      "generator-ibm-cloud-enablement",
+      "generator-ibm-service-enablement",
+      "generator-usecase-enablement"
+    ]
+  },
+  "generatorOptions": {
+    "generator-ibm-core-node-express": {
+      "version": "latest"
+    },
+    "generator-core-python-flask": {
+      "registry": "https://npm-registry.whitewater.ibm.com",
+      "scope": "@arf",
+      "version": "latest"
+    },
+    "generator-ibm-service-enablement": {
+      "version": "latest"
+    },
+    "generator-ibm-cloud-enablement": {
+      "version": "latest"
+    },
+    "generator-usecase-enablement": {
+      "registry": "https://npm-registry.whitewater.ibm.com",
+      "scope": "@arf",
+      "version": "latest"
+    }
+  },
+  "requiredCapabilities": [
+    "cloudant",
+    "dashDb"
+  ],
+  "requiredCapabilitiesURLs": {
+    "cloudant": "https://console.bluemix.net/catalog/services/cloudant-nosql-db",
+    "dashDb": "http://ibm.biz/db2oncloud-bluemix-docs"
+  },
+  "servicePlans": {
+    "cloudant": "Lite",
+    "dashDb": "Entry"
+  },
+  "email": "cloud@us.ibm.com"
+}
