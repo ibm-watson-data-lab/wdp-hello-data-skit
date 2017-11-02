@@ -1,6 +1,7 @@
 {
     "dependencies": {
 	   "async": "^2.5.0",
+	    "cloudant": "^1.10.0",
 	    "debug": "^3.1.0",
 	    "fs": "0.0.1-security",
 	    "ibm-cos-sdk": "^1.0.2",

@@ -52,6 +52,17 @@
 	      </div>
 	    </form>
       </div>
+
+	  <!-- Modal Structure -->
+	  <div id="modal1" class="modal modal-fixed-footer">
+	    <div class="modal-content" id="data_preview">
+
+	    </div>
+	    <div class="modal-footer">
+	      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+	    </div>
+	  </div>
+
       <!-- API input and response -->
         <div class="row">
 		    <form class="col s12">
@@ -89,7 +100,7 @@
      </div>
       <!--Import jQuery before materialize.js-->
       <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
       <script>
 
       	  function callBackend(opts, callback) {
@@ -115,6 +126,8 @@
 	      	  			var response = {
 	      	  				type: payload.response_type,
 	      	  				data: payload.data,
+	      	  				asset_type: payload.asset_type,
+	      	  				asset_sub_type: payload.asset_sub_type,
 	      	  				json_object: payload
 	      	  			}
       	  			   return callback(null, response);
@@ -200,7 +213,7 @@
           		         	}
 
           		         	return callback(null, 
-          		         		            response.data);
+          		         		            response);
           		         });
           }
 
@@ -382,21 +395,33 @@
 				clearAPIDisplay();
             	// call hello_data backend to fetch asset data
 				accessAssetData($('#api_key').val(),$('#projects').val(),$('#assets').val().split(':')[0],$('#assets').val().split(':')[1],
-					            function(err, data) {
-					            		// TODO
+					            function(err, response) {
+					            		var html = null;
 					            		if(err) {
-					            			alert ('Error: ' + JSON.stringify(err));
+					            			console.log(JSON.stringify(err));
+					            			if(err.status === 501) {
+					            				html = '<h4>Not implemented</h4>' + 
+					            			           '<p>' + err.responseText + ' </p>';
+					            			}
+					            			else {
+					            				html = '<h4>Error</h4>' +
+					            				       '<p>' + err.responseText + '</p>';
+					            			}
+					            			$('#data_preview').html(html);
+											$('#modal1').openModal();	
 					            		}
 					            		else {
-											alert('Data: ' + data);				            			
+					            			var html = '<h4>' + response.asset_sub_type + ' ' + response.asset_type + '</h4>' + 
+					            			           '<p>' + response.data + ' </p>';
+					            			$('#data_preview').html(html);
+											$('#modal1').openModal();		            			
 					            		}
 					            });
 
 
 			});
 
-
-            console.log('hello_data is ready');
+            console.log('hello-data is ready');
   	  	   });
 
       </script>

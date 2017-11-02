@@ -81,6 +81,11 @@ client.prototype.authenticate = function(callback) {
 client.prototype.project = require('./project.js');
 
 /*
+ * Datasource Types API call wrapper
+ */
+client.prototype.datasource_types = require('./datasource_types.js');
+
+/*
  * Call WDP API. Invoked by the ^^ wrappers.
  */
 client.prototype.apiCall = function(options, callback) {

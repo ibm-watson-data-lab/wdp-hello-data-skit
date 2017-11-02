@@ -44,7 +44,7 @@ module.exports = function () {
 		    	['Content-Type'] : 'application/json'
 		    },
 		    query: {
-		    	project_id: opts.guid,
+		    	project_id: opts.guid
 		    },
 		    data: JSON.stringify({query: "*:*"})
     	};
@@ -60,7 +60,7 @@ module.exports = function () {
       		url: '/v2/assets/' + opts.aguid,
 		    method: 'GET',
 		    query: {
-		    	project_id: opts.pguid,
+		    	project_id: opts.pguid
 		    }
     	};
 
@@ -79,7 +79,25 @@ module.exports = function () {
 		    	['Content-Type'] : 'application/json'
 		    },
 		    query: {
-		    	project_id: opts.guid,
+		    	project_id: opts.guid
+		    }
+    	};
+		return this.apiCall(options, callback);		
+	};
+
+	this.getConnection = function(opts, callback) {
+		if(! callback) {
+			callback = opts;
+			opts = null;
+		}
+    	var options = {
+      		url: '/v2/connections/' + opts.connection_id,
+		    method: 'GET',
+		    headers: {
+		    	['Content-Type'] : 'application/json'
+		    },
+		    query: {
+		    	project_id: opts.guid
 		    }
     	};
 		return this.apiCall(options, callback);		
