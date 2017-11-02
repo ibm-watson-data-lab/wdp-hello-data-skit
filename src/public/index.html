@@ -334,6 +334,19 @@
 
 			// a project was selected
 			$('#projects').change(function() {
+
+				// clear asset selection list
+				$('#assets').children().remove();
+				$('#assets').append($('<option></option>')
+					                   .attr('value', '')
+					                   .text('Choose a project to display its assets')
+				                     );	
+			    // disable assets select input
+				$('#assets').prop('disabled', true);	
+				$('#assets').material_select();
+
+				// disable asset action button
+				$('#go').addClass('disabled');
 				clearAPIDisplay();
 
 				// refresh project asset list 

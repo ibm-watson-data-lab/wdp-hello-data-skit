@@ -18,7 +18,7 @@ const debug = require('debug')('hello-data:cloudant_sample');
 
 function isNullOrEmptyString(string) {
   return ((! string) || (string.trim().length === 0));
-};
+}
 
 module.exports = function(connection_credentials, callback){
 

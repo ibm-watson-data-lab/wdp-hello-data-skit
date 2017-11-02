@@ -106,7 +106,7 @@ client.prototype.apiCall = function(options, callback) {
 				rest.request(this.base_url + options.url,
 			    	  	 	 options).on('timeout',
 			    	  	 	         	 function(ms) {
-			    	  	 	         	 	debug('< WDP API call %s timed out ======= \n',
+			    	  	 	         	 	debug('< WDP API call %s timed out after ' + ms + ' ms ======= \n',
 			    	  	 	         	 		  this.base_url + options.url);
 			    	  	 	         	 	return callback(null, {statusCode: 408, statusMessage: 'Request timed out'});
 			    	  	 	         	 })
@@ -130,7 +130,7 @@ client.prototype.apiCall = function(options, callback) {
 		rest.request(this.base_url + options.url,
 			      	 options).on('timeout',
 			    	  	 	   	 function(ms) {
-			    	  	 	        debug('< WDP API call %s timed out ======= \n',
+			    	  	 	        debug('< WDP API call %s timed out after ' + ms + ' ms ======= \n',
 			    	  	 	       		  this.base_url + options.url);	    	  	 	
 			    	           	 	return callback(null, {statusCode: 408, statusMessage: 'Request timed out'});
 			  	 	         	 })

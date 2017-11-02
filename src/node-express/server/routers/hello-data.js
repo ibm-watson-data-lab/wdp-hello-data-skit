@@ -4,7 +4,8 @@
 var express = require('express');
 
 // Use serviceManager to get all the initialized service SDKs
-var serviceManager = require('../services/service-manager');
+// This starter kit does not utilize the service manager
+// var serviceManager = require('../services/service-manager');
 
 const debug = require('debug')('hello-data:router');
 
@@ -16,9 +17,11 @@ module.exports = function(app){
 
 	const _ = require('lodash');
     const client = require('../lib/client.js');
-    const cloudant_access = require('../lib/data_access_helpers/cloudant_sample.js')
+    const cloudant_access = require('../lib/data_access_helpers/cloudant_sample.js');
+    const db2_warehouse_access = require('../lib/data_access_helpers/db2wh_sample.js');
 
 	// Add usecase logic endpoints to the express app
+	/*jshint unused:false*/
 	router.get("/listprojects", function(req, res, next){	
 
 		debug('Received request to fetch project list.');
@@ -80,6 +83,7 @@ module.exports = function(app){
 	});
 
 	// Add usecase logic endpoints to the express app
+	/*jshint unused:false*/
 	router.get("/listassets/:project_guid", function(req, res, next){	
 
 		debug('Received request to fetch asset list for project.');
@@ -164,8 +168,11 @@ module.exports = function(app){
 
 		// invoke appropriate data access implementation
 
-		if(req.params.asset_type == 'connection') {
-			// get connection information
+		if(req.params.asset_type === 'connection') {
+			// the asset is a connection to a data source
+			// (1) collect connection information
+			// (2) identify connection type
+			// (3) access data source using connection type specific implementation
 			debug('Fetching connection information...');
 			WDPClient.project().getConnection({guid: req.query.project_guid,
 											   connection_id: req.params.asset_id},
@@ -179,7 +186,9 @@ module.exports = function(app){
 		                     				  										 function(datasource_types_response_raw_data, response) {
 		                     				  										 	if(response.statusCode === 200) {
 		                     				  										 		const datasource_types_response_data = JSON.parse(datasource_types_response_raw_data);
+		                     				  										 		debug('Connection type: ' + datasource_types_response_data.entity.name);
 		                     				  										 		if(datasource_types_response_data.entity.name === 'cloudant') {
+		                     				  										 			// access the selected Cloudant instance
 		                     				  										 			cloudant_access({username:response_data.entity.properties.username,
 		                     				  										 			                 password:response_data.entity.properties.password,
 		                     				  										 			                 url:response_data.entity.properties.url || response_data.entity.properties.custom_url},
@@ -199,7 +208,32 @@ module.exports = function(app){
 											        																	return res.json(client_response);		                     				  										 			                 	}
 		                     				  										 			                 	});
 													                     				     }
+													                     				     else if(datasource_types_response_data.entity.name === 'dashdb'){
+													                     				     	// access the selected Db2 Warehouse instance
+													                     				     	db2_warehouse_access({username: response_data.entity.properties.username,
+													                     				     	                      password: response_data.entity.properties.password,
+													                     				     	                      hostname: response_data.entity.properties.host,
+													                     				     	                      port: response_data.entity.properties.port || 50001,
+													                     				     	                      database: response_data.entity.properties.database},
+																		                     				     	function(err, data) {
+			                     				  										 			                 	if(err) {
+			                     				  										 			                 		console.error('Error accessing Db2 Warehouse: ' + err);
+																															return res.status(500).send('Check hello-data console output.');
+			                     				  										 			                 	}
+			                     				  										 			                 	else {
+									                   		 					                     			         	var client_response = {
+																		     		    										response_type: 'data_response',
+																		     		    										asset_type: response_data.metadata.asset_type,
+																		     		    										asset_sub_type: datasource_types_response_data.entity.label,
+																		     		    										data: data
+																															};			
+																															debug('Hello-data sending response\n%O', client_response);
+												        																	return res.json(client_response);		                     				  										 			                 	}
+			                     				  										 			                 });
+
+													                     				     }
 													                     				     else {
+													                     				     	// acccess to other connection-based data sources has not been implemented
 													                     				     	return res.status(501).send('Sample data access for ' + datasource_types_response_data.entity.name + ' connections has not been implemented.');
 													                     				     }	
 		                     				  										 	}
@@ -227,4 +261,4 @@ module.exports = function(app){
 	});
 
 	app.use("/hello_data", router);
-}
+};
