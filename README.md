@@ -1,13 +1,4 @@
 # Watson Data Platform - Hello Data starter kit
-
-This starter kit illustrates how to 
- * connect to the Waton Data Platform
- * list projects
- * list assets in a project
- * retrieve data source connection (an asset of type "connection") information
- * retrieve a data file (an asset of type "data asset")
-
-## Application overview
 This Node.js starter kit application illustrates how to collect data asset information from a Watson Data Platform project and how to access a Cloudant database, a DB2 Warehouse on Cloud database and a data file that's stored in IBM Cloud Object Storage using that information.
 
 ![overview](img/skit_overview.png)
