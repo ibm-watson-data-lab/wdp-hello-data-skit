@@ -125,10 +125,7 @@
       	  			else if(payload.response_type === 'data_response') {
 	      	  			var response = {
 	      	  				type: payload.response_type,
-	      	  				data: payload.data,
-	      	  				asset_type: payload.asset_type,
-	      	  				asset_sub_type: payload.asset_sub_type,
-	      	  				json_object: payload
+	      	  				payload: payload
 	      	  			}
       	  			   return callback(null, response);
       	  			}
@@ -424,8 +421,12 @@
 											$('#modal1').openModal();	
 					            		}
 					            		else {
-					            			var html = '<h4>' + response.asset_sub_type + ' ' + response.asset_type + '</h4>' + 
-					            			           '<p>' + response.data + ' </p>';
+					            			var html = '<h4>Data access was successful</h4>' +
+					            			            '<table>' + 
+					            			            '<tr><th>Asset type</th><td>' + response.payload.asset_type + '</td>' + '</tr>' +
+					            			            '<tr><th>Sub type</th><td>' + response.payload.asset_sub_type_label + '</td>' + '</tr>' +
+					            			            '<tr><th>Asset info</th><td>' + response.payload.data + '</td>' + '</tr>' +
+					            			            '</table>';
 					            			$('#data_preview').html(html);
 											$('#modal1').openModal();		            			
 					            		}

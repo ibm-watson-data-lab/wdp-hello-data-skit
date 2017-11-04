@@ -14,6 +14,24 @@
 
 module.exports = function () {
 
+	this.get = function(opts, callback) {
+
+		if(! callback) {
+			callback = opts;
+			opts = null;
+		}
+    	var options = {
+      		url: '/v2/projects/' + opts.guid,
+		    method: 'GET'
+    	};
+    	if(opts) {
+    		options.query = opts;
+    		options.query.guid = null; // project_id is passed as parameter
+    	}
+
+		return this.apiCall(options, callback);		
+	};
+
 	this.list = function(opts, callback) {
 
 		if(! callback) {

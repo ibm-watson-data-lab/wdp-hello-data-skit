@@ -32,6 +32,7 @@ module.exports = function(connection_credentials, callback){
      (isNullOrEmptyString(connection_credentials.hostname)) || 
      (isNullOrNotPositiveNumber(connection_credentials.port)) || 
      (isNullOrEmptyString(connection_credentials.database))) {
+    debug('Db2 Warehouse connection credentials: \n%O', connection_credentials);
     return callback('Invocation error. Connection credentials are missing.');
   }
 
@@ -45,12 +46,12 @@ module.exports = function(connection_credentials, callback){
   debug('Connecting to Db2 Warehouse using URL ' +  ssldsn);
 
 
-  function close_conn(conn, callback) {
+  function close_conn(conn, parent_callback) {
     conn.close(function (err) {
       if (err) {
        console.error('Error disconnecting from the Db2 Warehouse database: ' + JSON.stringify(err));
        }
-      return callback();
+      return parent_callback();
     });
   }
 
@@ -62,19 +63,19 @@ module.exports = function(connection_credentials, callback){
                 }
                 // ... fetch some data
                 debug('Querying the database...');
-                conn.query('SELECT COUNT(*) AS TABLE_COUNT FROM SYSCAT.TABLES WHERE OWNER != \'SYSIBM\'', function (err, data) {
+                conn.query('SELECT COUNT(*) AS TABLE_COUNT FROM SYSCAT.TABLES WHERE OWNER = \'' + connection_credentials.username.toUpperCase() + '\'', function (err, data) {
                   if (err) {
+                    debug('The query failed.');
                     close_conn(conn, function() {
                       return callback('Error querying the Db2 Warehouse database: ' + JSON.stringify(err));
                     });
                   }
                   else {
+                    debug('The query returned the following result: \n%O', data);
                     close_conn(conn, function() {  
-                      return callback(null, 'The database contains ' + data[0].TABLE_COUNT + ' tables.');
+                      return callback(null, 'The database contains ' + data[0].TABLE_COUNT + ' tables that are owned by ' + connection_credentials.username + '.');
                     });
                   }
-                  // disconnect from database
- 
                 });
               });
 };
