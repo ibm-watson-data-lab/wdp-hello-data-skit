@@ -12,9 +12,11 @@ This Node.js starter kit application illustrates how to collect data asset infor
 
 ![overview](img/skit_overview.png)
 
+## Deployment
+To deploy this Watson Data Platform Starter Kit follow the instructions on [the Watson Data Platform Starter Kit page](https://dev-console.stage1.bluemix.net/developer/dataplatform/starter-kits)
 
 ### Debugging 
-After the Starter Kit application has been deployed to yor target environment you can optionally enable debugging to learn more about the interactions between the modules.
+After the application has been deployed to yor target environment you can optionally enable debugging to learn more about the interactions between the modules and the [Watson Data Platform API](https://wdp-api-registry.mybluemix.net/api-explorer/) and the data services.
  * Hwllo Data web page: debug output is always written to the browser console.
  * Backend modules: to enable debug output for all modules set environment variable `DEBUG` to `hello-data:*`
    * hello-data router: to enable debug output only for this module set environment variable `DEBUG` to `hello-data:router`
