@@ -53,13 +53,33 @@
 	    </form>
       </div>
 
-	  <!-- Modal Structure -->
+	  <!-- Modal Structures -->
 	  <div id="modal1" class="modal modal-fixed-footer">
 	    <div class="modal-content" id="data_preview">
-
 	    </div>
 	    <div class="modal-footer">
 	      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+	    </div>
+	  </div>
+
+	  <div id="modal2" class="modal">
+	    <div class="modal-content" id="please_wait">
+	    	<i class="large material-icons">cloud_download</i> 
+	    	<p>Please wait while Hello Data! is trying to access the data asset...</p>
+	    </div>
+	  </div>
+
+	  <div id="modal3" class="modal">
+	    <div class="modal-content" id="please_wait_projects">
+	    	<i class="large material-icons">cloud_download</i> 
+	    	<p>Please wait while Hello Data! is loading your project list...</p>
+	    </div>
+	  </div>
+
+	  <div id="modal4" class="modal">
+	    <div class="modal-content" id="please_wait_assets">
+	    	<i class="large material-icons">cloud_download</i> 
+	    	<p>Please wait while Hello Data! is loading the project's asset list...</p>
 	    </div>
 	  </div>
 
@@ -74,7 +94,6 @@
 		      <div class="row">
 		        <div class="input-field col s12">
 		          <textarea id="api_call_input" class="materialize-textarea" disabled></textarea>
-		          <!-- <label for="api_call_input">API call</label> -->
 		        </div>
 		      </div>
 		      <div class="row">
@@ -92,7 +111,6 @@
 		      <div class="row">
 		        <div class="input-field col s12">
 		          <textarea id="api_call_output" class="materialize-textarea" disabled ></textarea>
-		          <!-- <label for="api_call_output">API response</label>-->
 		        </div>
 		      </div>		      
 		    </form>
@@ -133,8 +151,6 @@
       	  				// unkown response type
       	  				return callback(jqxhr);	
       	  			}
-
-
       	  		}
       	  		else {
       	  			// treat hello-data HTTP status codes other than 200 as errors
@@ -186,7 +202,7 @@
           		         	}
 
           		         	return callback(null, 
-          		         		            response.json_object.asset_list, 
+          		         		            response.json_object.asset_list || [], 
           		         		            response.API_call, 
           		         					response.API_response_text, 
           		         					response.API_HTTP_status);
@@ -282,10 +298,13 @@
 					return;
 				}
 
+
+                $('#modal3').openModal();
 				// call getprojects endpoint
 				console.log('Getting project list using API key ' + $('#api_key').val());
 				getProjectList($('#api_key').val(), 
 					           function(err, project_list, api_input, api_output, http_status){
+					           	    $('#modal3').closeModal();
 					           		if(err) {
 					           			displayHelloDataError(err);
 					           		}
@@ -346,11 +365,13 @@
 				$('#go').addClass('disabled');
 				clearAPIDisplay();
 
+                $('#modal4').openModal();
 				// refresh project asset list 
 				console.log('Getting asset list for project id ' + $('#projects').val());
 				getAssetList($('#api_key').val(),
 					         $('#projects').val(), 
 					           function(err, asset_list, api_input, api_output, http_status){
+					           	   $('#modal4').closeModal();
 					           		if(err) {
 					           			displayHelloDataError(err);
 					           		}
@@ -361,9 +382,13 @@
             							$('#assets').children().remove();
             							//  add options to project selection list
             							if(asset_list.length == 0) {
+            								var asset_selector_text = 'Project does not contain data assets.';
+            								if(http_status.code > 200) {
+            									asset_selector_text = 'Asset list is unavailable.'
+            								} 
 	            							$('#assets').append($('<option></option>')
 	            								                   .attr('value', '')
-	            								                   .text('Project does not contain data assets.')
+	            								                   .text(asset_selector_text)
 	            							                     );	
            							    	// disable asset select input
             								$('#assets').prop('disabled', true);	            							
@@ -403,15 +428,25 @@
 
 			$('#go').click(function() {
 				clearAPIDisplay();
+				$('#go').addClass('disabled');
+				$('#modal2').openModal();
             	// call hello_data backend to fetch asset data
 				accessAssetData($('#api_key').val(),$('#projects').val(),$('#assets').val().split(':')[0],$('#assets').val().split(':')[1],
 					            function(err, response) {
+					            	    $('#modal2').closeModal();
+					            	    $('#go').removeClass('disabled');
 					            		var html = null;
 					            		if(err) {
 					            			console.log(JSON.stringify(err));
 					            			if(err.status === 501) {
-					            				html = '<h4>Not implemented</h4>' + 
-					            			           '<p>' + err.responseText + ' </p>';
+							            	    html = '<h4>Data access failed</h4>' +
+					            			            '<table>' + 
+					            			            '<tr><th>Asset type</th><td>' + err.responseJSON.asset_type + '</td>' + '</tr>' +
+					            			            '<tr><th>Sub type</th><td>' + err.responseJSON.asset_sub_type_label + '</td>' + '</tr>' +
+					            			            '<tr><th>Reason</th><td>' + err.responseJSON.reasonMessage + '</td>' + '</tr>' +
+					            			            '</table>';
+					            				//html = '<h4>Not implemented</h4>' + 
+					            			    //       '<p>' + err.responseJSON.reasonMessage + ' </p>';
 					            			}
 					            			else {
 					            				html = '<h4>Error</h4>' +
@@ -421,12 +456,12 @@
 											$('#modal1').openModal();	
 					            		}
 					            		else {
-					            			var html = '<h4>Data access was successful</h4>' +
-					            			            '<table>' + 
-					            			            '<tr><th>Asset type</th><td>' + response.payload.asset_type + '</td>' + '</tr>' +
-					            			            '<tr><th>Sub type</th><td>' + response.payload.asset_sub_type_label + '</td>' + '</tr>' +
-					            			            '<tr><th>Asset info</th><td>' + response.payload.data + '</td>' + '</tr>' +
-					            			            '</table>';
+					            			html = '<h4>Data access was successful</h4>' +
+					            		           '<table>' + 
+					            			       '<tr><th>Asset type</th><td>' + response.payload.asset_type + '</td>' + '</tr>' +
+					            	               '<tr><th>Sub type</th><td>' + response.payload.asset_sub_type_label + '</td>' + '</tr>' +
+					               	               '<tr><th>Asset info</th><td>' + response.payload.data + '</td>' + '</tr>' +
+					            			       '</table>';
 					            			$('#data_preview').html(html);
 											$('#modal1').openModal();		            			
 					            		}

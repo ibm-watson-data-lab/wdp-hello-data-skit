@@ -244,8 +244,11 @@ module.exports = function(app){
                  				  								else {
 																	// acccess to other connection-based data sources has not been implemented
 																	return callback({source: 'hello-data',
-			                                			             			 reasonCode: 501,
-			                                    			                     reasonMessage: 'Sample data access for ' + datasource_connection.meta.name + ' connections has not been implemented.'});           				  									
+			                                			             			     reasonCode: 501,
+			                                			             			     asset_type: req.params.asset_type,
+ 		    											  							 asset_sub_type_name: datasource_connection.meta.name,
+ 		    																		 asset_sub_type_label: datasource_connection.meta.label,			                                			             			     
+			                                    			                         reasonMessage: 'Access has not been implemented.'});           				  									
                  				  								}
                  				  							}
                  				  							else {
@@ -275,7 +278,7 @@ module.exports = function(app){
 					 			                 	else {
 			                     			         	var client_response = {
  		    												response_type: 'data_response',
- 		    												asset_type: req.params.asset_type ,
+ 		    												asset_type: req.params.asset_type,
  		    											    asset_sub_type_name: datasource_connection.meta.name,
  		    												asset_sub_type_label: datasource_connection.meta.label,
  		    												data: data
@@ -311,16 +314,20 @@ module.exports = function(app){
 	     				     }
 	     				     else {
 	     				     	// acccess to other connection-based data sources has not been implemented
-	                            return callback({source: 'hello-data',
-		             							 reasonCode: 501,
-			                     				 reasonMessage: 'Sample data access for ' + datasource_connection.meta.name  + ' connections has not been implemented.'});
+	     				     	// this code path should never be executed because the error condition was already triggered by the previous step
+								return callback({source: 'hello-data',
+	    			             			     reasonCode: 501,
+	    			             			     asset_type: req.params.asset_type,
+						  						 asset_sub_type_name: datasource_connection.meta.name,
+												 asset_sub_type_label: datasource_connection.meta.label,			                                			             			     
+	        			                         reasonMessage: 'Access has not been implemented.'});  
 	     				     }	
 					 	  }
 					 	 ],
 					 	 function(err, results) {
 						 	if(err) {
 						 		// an error was raised by one of the steps; abort
-						 		console.error('Data load from connection failed. ' + err.source + ' returned status code ' + err.reasonCode + ' and message ' + err.reasonMessage);
+						 		console.error('Data load from connection failed: ' + JSON.stringify(err));
 						 		return res.status(err.reasonCode).json(err);
 						 	}
 						 	else {	
