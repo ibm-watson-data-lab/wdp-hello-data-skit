@@ -10,12 +10,12 @@
   ],
   "checklist": [
     {
-      "label": "Setup",
-      "link": "https://ibm.com"
+      "label": "Watson Data Platform starter kit scenario setup",
+      "link": "https://github.com/ibm-watson-data-lab/wdp-hello-data-skit/wiki/setup"
     },
     {
-      "label": "Learn more",
-      "link": "https://ibm.com"
+      "label": "How to get an IBM Cloud API key",
+      "link": "https://console.bluemix.net/docs/iam/userid_keys.html"
     }
   ],
   "generators": {
