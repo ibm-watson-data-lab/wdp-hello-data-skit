@@ -1,6 +1,6 @@
 {
-  "name": "wdp-hello-data-starterkit",
-  "description": "Demonstrates how to access WDP data sources",
+  "name": "Hello Data!",
+  "description": "Demonstrates how to access Watson Data Platform project data sources, such as connections and data files.",
   "thumbnailURL": "blueprint/thumbnail.svg",
   "appIconURL": "blueprint/appicon.svg",
   "previewURLs": [],
@@ -21,12 +21,6 @@
   "generators": {
     "node": [
       "generator-ibm-core-node-express",
-      "generator-ibm-cloud-enablement",
-      "generator-ibm-service-enablement",
-      "generator-usecase-enablement"
-    ],
-    "python": [
-      "generator-core-python-flask",
       "generator-ibm-cloud-enablement",
       "generator-ibm-service-enablement",
       "generator-usecase-enablement"
