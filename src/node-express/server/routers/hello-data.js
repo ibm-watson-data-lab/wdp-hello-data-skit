@@ -479,7 +479,8 @@ module.exports = function(app){
 		else {
 			res.status(501).json({source: 'hello-data',
 				                  reasonCode: 501,
-				                  reasonMessage: 'Sample data access for assets of type ' + req.params.asset_type + ' has not been implemented.'
+				                  asset_type: req.params.asset_type,
+				                  reasonMessage: 'Access has not been implemented.'
 				            	 });
 		}
 	});
